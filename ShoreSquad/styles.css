@@ -54,6 +54,12 @@ body{
 .event-item{padding:.6rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;border:1px solid #f1f1f1}
 .event-item button{background:transparent;border:0;color:var(--ocean-700);cursor:pointer}
 
+.next-cleanup-section{padding:1.25rem 0;background:#fff;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;margin:1rem 0}
+.google-map-wrapper{margin:1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 6px 18px rgba(3,52,68,0.06)}
+.cleanup-details{margin-top:1rem;padding:1rem;background:var(--sand-100);border-radius:8px}
+.cleanup-details p{margin:.5rem 0;color:var(--text)}
+#register-cleanup-btn{margin-top:.5rem}
+
 .how-it-works{padding:1.25rem 0}
 
 .site-footer{padding:1.25rem 0;color:var(--muted);font-size:.95rem}
