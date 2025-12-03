@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ShoreSquad — Youth Beach Cleanup</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-sA+e2qvFZXSQ2b4E2qA1qDfl+o9k0nYQJbN7xB8Jf+M="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-row">
+        <div class="brand">
+          <a href="#" class="logo">ShoreSquad</a>
+          <span class="tag">Rally your crew. Protect our coasts.</span>
+        </div>
+        <nav class="main-nav" aria-label="Main navigation">
+          <button
+            id="nav-toggle"
+            aria-expanded="false"
+            aria-controls="nav-list"
+          >
+            ☰
+          </button>
+          <ul id="nav-list" class="nav-list">
+            <li><a href="#map-section">Map</a></li>
+            <li><a href="#events">Events</a></li>
+            <li><a href="#weather">Weather</a></li>
+            <li>
+              <button id="create-event-btn" class="btn primary">Create</button>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <h1>ShoreSquad</h1>
+            <p class="lead">
+              Join youthful teams to clean beaches, track weather, and explore
+              nearby events on an interactive map.
+            </p>
+            <div class="hero-ctas">
+              <button id="join-cta" class="btn primary">Join a Cleanup</button>
+              <button id="learn-cta" class="btn ghost">How it works</button>
+            </div>
+          </div>
+          <figure class="hero-illustration">
+            <img
+              src="assets/Beach.jpeg"
+              alt="Young people cleaning a beach"
+              loading="lazy"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section id="map-section" class="map-section">
+        <div class="container">
+          <h2>Cleanup Map</h2>
+          <div class="map-and-side">
+            <div id="map" class="map"></div>
+            <aside class="side-panel">
+              <div id="weather" class="card weather-card" aria-live="polite">
+                <h3>Local Weather</h3>
+                <div id="weather-content">Loading weather…</div>
+              </div>
+              <div id="events" class="card events-card">
+                <h3>Upcoming Cleanups</h3>
+                <ul id="event-list" class="event-list"></ul>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="how-it-works container">
+        <h2>How ShoreSquad Works</h2>
+        <ol>
+          <li>Create or join a cleanup event near you.</li>
+          <li>Check weather and tide info before you go.</li>
+          <li>Rally your crew and log the results together.</li>
+        </ol>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <p>&copy; ShoreSquad — Built for youth-led coastal action.</p>
+      </div>
+    </footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-o9N1j8w6r3sEJ8rZ2G2tG1s3gYw0H8s7aP3h2f5p9zM="
+      crossorigin=""
+    ></script>
+    <script src="app.js" defer></script>
+  </body>
+</html>

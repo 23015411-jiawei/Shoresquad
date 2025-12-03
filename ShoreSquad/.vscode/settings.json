@@ -1,0 +1,7 @@
+{
+  "liveServer.settings.port": 5500,
+  "liveServer.settings.root": "/",
+  "files.exclude": {
+    "**/.git": true
+  }
+}
