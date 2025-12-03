@@ -54,6 +54,13 @@ body{
 .event-item{padding:.6rem;border-radius:8px;display:flex;justify-content:space-between;align-items:center;border:1px solid #f1f1f1}
 .event-item button{background:transparent;border:0;color:var(--ocean-700);cursor:pointer}
 
+.forecast-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem}
+.forecast-card{background:linear-gradient(135deg,var(--ocean-500),var(--ocean-700));color:#fff;padding:.75rem;border-radius:8px;text-align:center;box-shadow:0 4px 12px rgba(2,136,167,0.2)}
+.forecast-date{font-weight:700;font-size:.9rem}
+.forecast-date-small{font-size:.75rem;opacity:.9}
+.forecast-condition{margin:.5rem 0;font-size:.85rem}
+.forecast-temp{font-size:.8rem;opacity:.95}
+
 .next-cleanup-section{padding:1.25rem 0;background:#fff;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;margin:1rem 0}
 .google-map-wrapper{margin:1rem 0;border-radius:var(--radius);overflow:hidden;box-shadow:0 6px 18px rgba(3,52,68,0.06)}
 .cleanup-details{margin-top:1rem;padding:1rem;background:var(--sand-100);border-radius:8px}

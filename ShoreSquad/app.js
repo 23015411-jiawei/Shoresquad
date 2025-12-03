@@ -1,7 +1,5 @@
 // ShoreSquad — app.js
 document.addEventListener('DOMContentLoaded', ()=>{
-  const OPENWEATHER_API_KEY = 'YOUR_OPENWEATHER_API_KEY'; // <-- replace with your API key
-
   // Simple responsive nav toggle
   const navToggle = document.getElementById('nav-toggle');
   const navList = document.getElementById('nav-list');
@@ -11,16 +9,16 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 
   // Initialize map (Leaflet)
-  const map = L.map('map', {attributionControl:false}).setView([36.0, -122.0], 9);
+  const map = L.map('map', {attributionControl:false}).setView([1.3521, 103.8198], 11);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19
   }).addTo(map);
 
   // Sample events — in real app this would come from an API
   const events = [
-    {id:1,title:'Sunrise Shore Cleanup',lat:36.619,lon:-121.901,date:'2026-06-12',spots:12},
-    {id:2,title:'Junior Crew Coastal Sweep',lat:36.978,lon:-122.031,date:'2026-06-19',spots:20},
-    {id:3,title:'Community Beach Day',lat:35.997,lon:-121.390,date:'2026-07-02',spots:30}
+    {id:1,title:'Sunrise Shore Cleanup',lat:1.381497,lon:103.955574,date:'2026-06-12',spots:12},
+    {id:2,title:'Junior Crew Coastal Sweep',lat:1.35,lon:103.8,date:'2026-06-19',spots:20},
+    {id:3,title:'Community Beach Day',lat:1.3,lon:103.75,date:'2026-07-02',spots:30}
   ];
 
   const markers = {};
@@ -66,32 +64,94 @@ document.addEventListener('DOMContentLoaded', ()=>{
   renderEventList();
 
   // Basic weather fetch (OpenWeatherMap) — uses coords of map center
-  async function fetchWeather(lat,lon){
-    if(OPENWEATHER_API_KEY==='YOUR_OPENWEATHER_API_KEY'){
-      document.getElementById('weather-content').innerText = 'Add an OpenWeather API key in app.js to see live weather.';
-      return;
-    }
+  // ===== NEA Realtime Weather API Integration =====
+  const NEA_API_URL = 'https://api.data.gov.sg/v1/environment/2-hour-weather';
+  const NEA_4DAY_URL = 'https://api.data.gov.sg/v1/environment/4-day-outlook';
+
+  async function fetchNEAWeather(){
     try{
-      const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${OPENWEATHER_API_KEY}`);
-      if(!res.ok) throw new Error('weather fetch failed');
+      // Fetch current weather
+      const res = await fetch(NEA_API_URL);
+      if(!res.ok) throw new Error('NEA API error');
       const data = await res.json();
-      showWeather(data);
+      
+      // Get current conditions from first area (Singapore overall)
+      if(data.items && data.items.length > 0){
+        const item = data.items[0];
+        const forecasts = item.general || {};
+        showCurrentWeather(forecasts, data.metadata.valid_period);
+      }
     }catch(err){
-      document.getElementById('weather-content').innerText = 'Weather unavailable.';
+      console.error('Weather fetch error:', err);
+      document.getElementById('weather-content').innerHTML = '<div style="color:var(--muted)">Weather data unavailable</div>';
     }
   }
 
-  function showWeather(data){
+  function showCurrentWeather(forecasts, period){
     const el = document.getElementById('weather-content');
+    const forecast = forecasts.forecast || 'N/A';
+    const humidity = forecasts.humidity ? `${forecasts.humidity.low}-${forecasts.humidity.high}%` : 'N/A';
+    const wind = forecasts.wind ? `${forecasts.wind.speed.low}-${forecasts.wind.speed.high} km/h` : 'N/A';
+    
     el.innerHTML = `
-      <div style="font-weight:600">${data.name} — ${Math.round(data.main.temp)}°C</div>
-      <div style="color:var(--muted)">${data.weather[0].description}</div>
+      <div style="font-weight:600;color:var(--ocean-700)">Current Conditions</div>
+      <div style="margin:.5rem 0;color:var(--text)"><strong>${forecast}</strong></div>
+      <div style="font-size:.85rem;color:var(--muted)">💧 Humidity: ${humidity}</div>
+      <div style="font-size:.85rem;color:var(--muted)">💨 Wind: ${wind}</div>
     `;
   }
 
-  // Initial weather load
-  const center = map.getCenter();
-  fetchWeather(center.lat, center.lng);
+  async function fetch4DayForecast(){
+    try{
+      const res = await fetch(NEA_4DAY_URL);
+      if(!res.ok) throw new Error('NEA 4-day API error');
+      const data = await res.json();
+      
+      if(data.items && data.items.length > 0){
+        const item = data.items[0];
+        const forecasts = item.forecasts || [];
+        show4DayForecast(forecasts);
+      }
+    }catch(err){
+      console.error('4-day forecast error:', err);
+      const container = document.getElementById('forecast-grid');
+      if(container) container.innerHTML = '<div style="color:var(--muted)">Forecast unavailable</div>';
+    }
+  }
+
+  function show4DayForecast(forecasts){
+    const container = document.getElementById('forecast-grid');
+    if(!container) return;
+    
+    container.innerHTML = '';
+    forecasts.slice(0, 4).forEach(f=>{
+      const date = new Date(f.date);
+      const dayName = date.toLocaleDateString('en-SG', {weekday:'short'});
+      const dateStr = date.toLocaleDateString('en-SG', {month:'short', day:'numeric'});
+      
+      const card = document.createElement('div');
+      card.className = 'forecast-card';
+      card.innerHTML = `
+        <div class="forecast-date">${dayName}</div>
+        <div class="forecast-date-small">${dateStr}</div>
+        <div class="forecast-condition">${f.forecast}</div>
+        <div class="forecast-temp">
+          <span>📊 ${f.relative_humidity.low}-${f.relative_humidity.high}%</span>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  // Fetch weather on page load
+  fetchNEAWeather();
+  fetch4DayForecast();
+
+  // Refresh weather every 30 minutes
+  setInterval(()=>{
+    fetchNEAWeather();
+    fetch4DayForecast();
+  }, 30 * 60 * 1000);
 
   // Lazy load images (enhanced) using IntersectionObserver
   const lazyImgs = document.querySelectorAll('img[loading="lazy"]');
